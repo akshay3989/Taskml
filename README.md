@@ -49,13 +49,13 @@ Data Visualization:
 
 Model Evaluation:
 
-Model                 Random Forest              Transformer
+Model                                             Random Forest              Transformer
 
-MAE                      0.24                       0.21
+MAE                                                  0.24                       0.21
 
-RMSE                     0.36                       0.33
+RMSE                                                  0.36                       0.33
 
-R² Score                 0.82                       0.85
+R² Score                                               0.82                       0.85
 
            The Transformer model outperformed Random Forest in all metrics.
 
