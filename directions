@@ -1,0 +1,76 @@
+These are the libraries I have installed while working on this dataset:
+                NumPy, or Numerical Python, is a Python library used for scientific computing and working with large array.
+                Pandas is a Python library used for data analysis, manipulation, and visualization.
+                Matplotlib.pyplot is a collection of functions that make it easy to create plots in Python.
+                Seaborn is a Python library used to create statistical graphics and perform data visualization
+                The train_test_split function is a powerful tool in Scikit-learn's arsenal, primarily used to divide datasets into training and testing subsets
+                MinMaxScaler scales the data to a fixed range, typically between 0 and 1. On the other hand, StandardScaler rescales the data to have a mean of 0 and a standard deviation of 1
+                PCA stands for Principal Component Analysis, a statistical method that reduces the size of a data set while preserving its most important features. 
+                t-distributed stochastic neighbor embedding (t-SNE) is a machine learning algorithm that visualizes high-dimensional data in 2D or 3D
+                A random forest regressor. A random forest is a meta estimator that fits a number of decision tree regressors on various sub-samples of the dataset and uses averaging to improve the predictive accuracy and control over-fitting.
+                Mean Absolute Error(MAE) is the mean size of the mistakes in collected predictions
+                The Mean Absolute Error is the squared mean of the difference between the actual values and predictable values.
+                RMSE is the standard deviation of the errors which occur when a prediction is made on a dataset. 
+At first we load the dataset with df = pd.read_csv('TASK-ML-INTERN.csv').
+I then inspect the data by using 
+print(df.head())
+print(df.info())
+print(df.describe())
+
+
+Further I checked for missing values using 
+print("Missing Values:")
+print(df.isnull().sum())
+
+
+I used df.fillna(df.select_dtypes(include=['number']).median(), inplace=True) to handle the missing values
+
+
+# Separate features and target variable
+X = df.iloc[:, :-1].values  # Assuming last column is the target
+y = df.iloc[:, -1].values
+
+
+# Normalize data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+To visualize the spectral bonds I used the following code
+plt.figure(figsize=(10, 5))
+plt.plot(X_scaled.T, alpha=0.1, color='blue')
+plt.title("Spectral Reflectance Across Samples")
+plt.xlabel("Wavelength Bands")
+plt.ylabel("Reflectance")
+plt.show()
+
+I apply PCA using the below formula
+# Apply PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+print("Explained variance ratio:", pca.explained_variance_ratio_)
+
+#PCA VISUALIZATION
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='coolwarm')
+plt.title("PCA Projection")
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+plt.colorbar(label="DON Concentration")
+plt.show()
+
+# Apply t-SNE
+tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+X_tsne = tsne.fit_transform(X_scaled)
+plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, cmap='coolwarm')
+plt.title("t-SNE Projection")
+plt.colorbar(label="DON Concentration")
+plt.show()
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Train model (Random Forest)
+rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# Predictions (Random Forest)
+y_pred_rf = rf_model.predict(X_test)
